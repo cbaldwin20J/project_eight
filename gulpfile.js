@@ -6,7 +6,8 @@ const gulp = require('gulp'),
 	uglify = require('gulp-uglify'),
 	rename = require('gulp-rename'),
 	sass = require('gulp-sass'),
-	maps = require('gulp-sourcemaps');
+	maps = require('gulp-sourcemaps'),
+	uglifycss = require('gulp-uglifycss');
 
 // so to run this task, in the console we do 'gulp concatScripts'.
 gulp.task('concatScripts', function(){
@@ -32,7 +33,7 @@ gulp.task('concatScripts', function(){
 // after the 'concatScripts' above.
 gulp.task('minifyScripts', function(){
 	// get the file you want to minify
-	gulp.src('js/app.js')
+	gulp.src('dist/js/app.js')
 		// run uglify() on it which will minify it
 		.pipe(uglify())
 		// this is optional but it will put the minified code into a new
@@ -42,7 +43,7 @@ gulp.task('minifyScripts', function(){
 		.pipe(gulp.dest('dist/js'));
 })
 
-// will turn sass into css
+// will turn sass into css and concat it into one file.
 gulp.task('compileSass', function() {
 	// we just need to get one sass file, because the main
 	// one will have all the others imported into it
@@ -58,9 +59,23 @@ gulp.task('compileSass', function() {
 		.pipe(gulp.dest('dist/css'));
 })
 
+// will minify our new concated css file.
+gulp.task('minifyCss', function(){
+	// get the file you want to minify
+	gulp.src('dist/css/global.css')
+		// run uglify() on it which will minify it
+		.pipe(uglifycss())
+		// this is optional but it will put the minified code into a new
+		// file called 'app.min.js'
+		.pipe(rename('global.min.css'))
+		// then put the 'app.min.js' in the 'js' folder.
+		.pipe(gulp.dest('dist/css'));
+})
+
 // to run this task, because its 'default' in the console
 // we just type 'gulp'. The array ['hello'] means it will
 // run the 'gulp.task('hello')' before it runs this 'default'.
 gulp.task("default", ["hello"], function() {
 	console.log("This is the default task!");
 });
+
