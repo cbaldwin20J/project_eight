@@ -2,7 +2,9 @@
 'use strict';
 
 const gulp = require('gulp'),
-	concat = require('gulp-concat');
+	concat = require('gulp-concat'),
+	uglify = require('gulp-uglify'),
+	rename = require('gulp-rename');
 
 // so to run this task, in the console we do 'gulp concatScripts'.
 gulp.task('concatScripts', function(){
@@ -18,6 +20,19 @@ gulp.task('concatScripts', function(){
 	// this will put the 'app.js' file in the folder 'js'.
 	.pipe(gulp.dest("js"));
 });
+
+
+gulp.task('minifyScripts', function(){
+	// get the file you want to minify
+	gulp.src('js/app.js')
+		// run uglify() on it which will minify it
+		.pipe(uglify())
+		// this is optional but it will put the minified code into a new
+		// file called 'app.min.js'
+		.pipe(rename('app.min.js'))
+		// then put the 'app.min.js' in the 'js' folder.
+		.pipe(gulp.dest('js'));
+})
 
 // to run this task, because its 'default' in the console
 // we just type 'gulp'. The array ['hello'] means it will
