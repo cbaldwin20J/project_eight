@@ -4,7 +4,9 @@
 const gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
-	rename = require('gulp-rename');
+	rename = require('gulp-rename'),
+	sass = require('gulp-sass'),
+	maps = require('gulp-sourcemaps');
 
 // so to run this task, in the console we do 'gulp concatScripts'.
 gulp.task('concatScripts', function(){
@@ -14,14 +16,20 @@ gulp.task('concatScripts', function(){
 		'js/global.js',
 		'js/circle/autogrow.js',
 		'js/circle/circle.js'])
+	// this will create our source maps
+	.pipe(maps.init())
 	// this concats them all into this one file 'app.js'
 	// (it will create the file for us)
 	.pipe(concat('app.js'))
+	// this will put the source maps in the same folder
+	// as the gulp.dest below which is 'dist/js'
+	.pipe(maps.write('./'))
 	// this will put the 'app.js' file in the folder 'js'.
-	.pipe(gulp.dest("js"));
+	.pipe(gulp.dest("dist/js"));
 });
 
-
+// call 'gulp minifyScripts' to run this. Its important this goes
+// after the 'concatScripts' above.
 gulp.task('minifyScripts', function(){
 	// get the file you want to minify
 	gulp.src('js/app.js')
@@ -31,7 +39,23 @@ gulp.task('minifyScripts', function(){
 		// file called 'app.min.js'
 		.pipe(rename('app.min.js'))
 		// then put the 'app.min.js' in the 'js' folder.
-		.pipe(gulp.dest('js'));
+		.pipe(gulp.dest('dist/js'));
+})
+
+// will turn sass into css
+gulp.task('compileSass', function() {
+	// we just need to get one sass file, because the main
+	// one will have all the others imported into it
+	gulp.src('sass/global.scss')
+		// creating the source maps (I think)
+		.pipe(maps.init())
+		// compile the sass into css
+		.pipe(sass())
+		// this means put the source maps in the same folder as the
+		// gulp.dest below which will be in 'dist/css'.
+		.pipe(maps.write('./'))
+		// put it into a folder called 'css' in the 'dist' folder.
+		.pipe(gulp.dest('dist/css'));
 })
 
 // to run this task, because its 'default' in the console
