@@ -66,6 +66,8 @@ gulp.task('compileSass', function() {
 		.pipe(gulp.dest('dist/styles'));
 })
 
+
+
 // will minify our new concated css file.
 gulp.task('minifyCss', ['compileSass'], function(){
 	// get the file you want to minify
@@ -74,7 +76,8 @@ gulp.task('minifyCss', ['compileSass'], function(){
 		.pipe(uglifycss())
 		.pipe(rename('all.min.css'))
 		// then put the 'app.min.js' in the 'js' folder.
-		.pipe(gulp.dest('dist/styles'));
+		.pipe(gulp.dest('dist/styles'))
+		.pipe(connect.reload());
 })
 
 
@@ -88,28 +91,41 @@ gulp.task('images', () =>
         .pipe(gulp.dest('dist/content'))
 );
 
+// this will delete the 'dist' folder and everything inside.
 gulp.task('clean', function(){
 	del.sync('dist');
 });
 
 gulp.task('build', ['clean', 'scripts', 'styles', 'images']);
 
-// this will delete the 'dist' folder and everything inside.
+
+
+
+
+gulp.task('connect', function() {
+  connect.server({
+  	port: 3000,
+  	
+  	livereload: {
+ 		enable: true,
+ 		port: 3000
+},
+  });
+});
+
+
+
 
 
 // when run, will watch if any of the sass files are changed,
 // if one is then it will call the 'styles' task.
 gulp.task('watch', function(){
-	gulp.watch('sass/**/**/*.sass', ['styles']);
+	gulp.watch('[sass/**/**/*.sass, sass/*.scss]', ['styles']);
+
 });
-
-
-gulp.task('connect', function() {
-  connect.server({port: 3000});
-});
-
 // to run this task, because its 'default' in the console
 // we just type 'gulp'. The array ['clean'] means it will
 // run the 'gulp.task('clean')' before it runs the callback 
 // function of 'gulp.start('build').
-gulp.task("default", ["build", "connect"]);
+gulp.task("default", ["build", "connect", "watch"]);
+//*************************************************************************
