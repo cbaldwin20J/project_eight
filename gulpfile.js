@@ -9,7 +9,9 @@ const gulp = require('gulp'),
 	maps = require('gulp-sourcemaps'),
 	uglifycss = require('gulp-uglifycss'),
 	del = require('del'),
-	imagemin = require('gulp-imagemin');
+	imagemin = require('gulp-imagemin'),
+	connect = require('gulp-connect');
+
 
 // so to run this task, in the console we do 'gulp concatScripts'.
 gulp.task('concatScripts', function(){
@@ -102,10 +104,12 @@ gulp.task('watch', function(){
 });
 
 
+gulp.task('connect', function() {
+  connect.server({port: 3000});
+});
+
 // to run this task, because its 'default' in the console
 // we just type 'gulp'. The array ['clean'] means it will
 // run the 'gulp.task('clean')' before it runs the callback 
 // function of 'gulp.start('build').
-gulp.task("default", ["build"], function() {
-	gulp.start('build');
-});
+gulp.task("default", ["build", "connect"]);
