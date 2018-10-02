@@ -35,6 +35,7 @@ gulp.task('concatScripts', function(){
 	.pipe(gulp.dest("dist/scripts"));
 });
 
+
 // call 'gulp minifyScripts' to run this. Its important this goes
 // after the 'concatScripts' above.
 gulp.task('minifyScripts', ["concatScripts"], function(){
@@ -47,7 +48,8 @@ gulp.task('minifyScripts', ["concatScripts"], function(){
 		.pipe(rename('all.min.js'))
 		// then put the 'app.min.js' in the 'js' folder.
 		.pipe(gulp.dest('dist/scripts'));
-})
+});
+
 
 // will turn sass into css and concat it into one file.
 gulp.task('compileSass', function() {
@@ -64,8 +66,7 @@ gulp.task('compileSass', function() {
 		.pipe(maps.write('./'))
 		// put it into a folder called 'css' in the 'dist' folder.
 		.pipe(gulp.dest('dist/styles'));
-})
-
+});
 
 
 // will minify our new concated css file.
@@ -77,14 +78,14 @@ gulp.task('minifyCss', ['compileSass'], function(){
 		.pipe(rename('all.min.css'))
 		// then put the 'app.min.js' in the 'js' folder.
 		.pipe(gulp.dest('dist/styles'))
-		.pipe(connect.reload());
-})
+});
 
 
 gulp.task("scripts", ["minifyScripts"]);
 
 gulp.task("styles", ["minifyCss"]);
 
+// optimizes the images and puts them in a 'content' folder in the 'dist' folder
 gulp.task('images', () =>
     gulp.src('images/*')
         .pipe(imagemin())
@@ -93,36 +94,26 @@ gulp.task('images', () =>
 
 // this will delete the 'dist' folder and everything inside.
 gulp.task('clean', function(){
+	// this makes it so the task finishes before anything else is run
 	del.sync('dist');
 });
 
+// puts everything together
 gulp.task('build', ['clean', 'scripts', 'styles', 'images']);
 
-
-
-
-
+// starts up a localhost:3000 server to run the website
 gulp.task('connect', function() {
   connect.server({
   	port: 3000,
-  	
-  	livereload: {
- 		enable: true,
- 		port: 3000
-},
   });
 });
-
-
-
-
 
 // when run, will watch if any of the sass files are changed,
 // if one is then it will call the 'styles' task.
 gulp.task('watch', function(){
 	gulp.watch('[sass/**/**/*.sass, sass/*.scss]', ['styles']);
-
 });
+
 // to run this task, because its 'default' in the console
 // we just type 'gulp'. The array ['clean'] means it will
 // run the 'gulp.task('clean')' before it runs the callback 

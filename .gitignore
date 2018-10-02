@@ -2,3 +2,4 @@
 .sass-cache
 erase_notes.txt
 node_modules
+dist
